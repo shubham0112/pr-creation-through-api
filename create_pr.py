@@ -2,7 +2,7 @@ import json
 import requests
 from datetime import datetime
 import base64
-from dotenv import dotenv_values
+
 
 def raise_pr(gh_user, headers, repo, new_branch, base_branch):
     url_create_pr = f"https://api.github.com/repos/{gh_user}/{repo}/pulls"
@@ -61,15 +61,15 @@ def read_and_update_schema_file(gh_user, headers, repo, file_path, branch):
     response_get_file = requests.get(url_get_file, headers=headers, params=params_get_file).json()
     current_content = base64.b64decode(response_get_file["content"]).decode("utf-8")
 
-    # TODO replace this extra_fields_json with actual json from backfill command
+    # extra fields you want to add in that file
     extra_fields_json = {
-        "new_field1" : "fake",
-        "dataSource" : {
-            "age" : 0
+        "new_field1": "fake",
+        "dataSource": {
+            "age": 0
         },
-        "phoneList" : [
+        "phoneList": [
             {
-                "new_field2" : "fake"
+                "new_field2": "fake"
             }
         ]
     }
@@ -86,7 +86,7 @@ def create_new_branch(gh_user, headers, repo, sha_base_branch):
         "sha": sha_base_branch  # latest commit of base branch
     }
     response_create_branch = requests.post(url, json=data_create_branch, headers=headers).json()
-    new_branch_sha = response_create_branch["object"]["sha"]
+    # new_branch_sha = response_create_branch["object"]["sha"]
     return new_branch
 
 
@@ -102,10 +102,10 @@ def get_branch_sha(gh_user, headers, repo_name, branch_name):
 
 def main():
     gh_user = "shubham0112"
-    gh_token = dotenv_values(".env").get("personal_access_token")
+    gh_token = "<PAT>"  # replace with your personal access token
     repo_name = "schemas"
     base_branch_name = "main"
-    file_path = "original_schema.py"
+    file_path = "original_schema.py"  # file you want to make change to
     headers = {
         "Authorization": f"token {gh_token}",
         "Accept": "application/vnd.github+json"
